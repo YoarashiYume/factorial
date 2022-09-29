@@ -1,26 +1,27 @@
 ﻿#include <iostream>
 #include <vector>
-//#define DEBUG
+
+using byte = std::uint8_t;
+
 int main(int argc, char* argv[])
 {
-    typedef unsigned char byte;
-#ifndef DEBUG
     if (argc != 2)
     {
         std::cout << "Only one argument\n";
         return -1;
     }
-    int factorialValue = std::atoi(argv[1]);
-#else
-    int factorialValue = 5;
-#endif
+    std::int64_t factorialValue = std::atoll(argv[1]);
+
+	//represent the number as an array
     std::vector<byte> result = { 1 };
-    unsigned int accumulate = 0;
+    std::uint64_t accumulate = 0;
+	
     for (; factorialValue > 0; --factorialValue)
         for (size_t i = 0; ; ++i)
             if (i < result.size())
             {
-                accumulate += (int)result.at(i) * factorialValue;
+				//complements 'accumulate' var. and store the new value in i pos.
+                accumulate += static_cast<std::uint64_t>(result.at(i)) * factorialValue;
                 result.at(i) = accumulate % 10;
                 accumulate /= 10;
                 if (accumulate == 0 && i == result.size() - 1)
@@ -28,12 +29,15 @@ int main(int argc, char* argv[])
             }
             else
             {
-                result.push_back(accumulate % 10);
+				//create new pos. and set value
+                result.emplace_back(accumulate % 10);
                 accumulate /= 10;
                 if (accumulate == 0)
                     break;
             }
+	//console output
     for (auto it = result.rbegin(); it != result.rend(); ++it)
         std::cout << (int)(*it);
+	
     return 0;
 }
